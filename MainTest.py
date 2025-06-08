@@ -1,31 +1,33 @@
 import os
-from LoadFromUI import ReceivingMatchOrPatchOrSourceCodeFromList, MatchLoadFromString, PatchLoadFromString, DetectProgrammingLanguage
-from TokenizeCode import TokenizeCode, FindSpecialOperatorIndixes, CheckAndRunTokenize, RemoveInsignificantTokens
+from ParsingCodeAndInstruction import ReceivingMatchOrPatchOrSourceCodeFromListUI, MatchLoadFromString, PatchLoadFromString
+from TokenizeCode import  CheckAndRunTokenize
 from SearchCode import SearchInsertIndexInTokenList, InsertNestingLevel, SearchInsertIndexInSourseCode, CheckMatchNestingMarkerPairs, MatchNestingLevelInsertALL
+from Insert import Insert
 
-test_folder = "test"
-source_folder = "source"
+TestFolder = "test"
+SourceFolder = "source"
 results = []
-test_files = [f for f in os.listdir(test_folder) if f.endswith(".md")]
-source_files = [f for f in os.listdir(source_folder) if f.endswith(".cpp")]
-print(test_files,source_files)
+TestFiles = [f for f in os.listdir(TestFolder) if f.endswith(".md")]
+SourceFiles = [f for f in os.listdir(SourceFolder) if f.endswith(".cpp")]
+print(TestFiles,SourceFiles)
 pairs = []
 
-for test_file in test_files:
-    base_name = os.path.splitext(test_file)[0]
-    source_file = f"{base_name}.cpp"
-    if source_file in source_files:
-        pairs.append((os.path.join(test_folder, test_file), os.path.join(source_folder, source_file)))
+for TestFile in TestFiles:
+    BaseName = os.path.splitext(TestFile)[0]
+    SourceFile = f"{BaseName}.cpp"
+    if SourceFile in SourceFiles:
+        pairs.append((os.path.join(TestFolder, TestFile), os.path.join(SourceFolder, SourceFile)))
 
-for test_path, source_path in pairs:
-    base_name = os.path.splitext(os.path.basename(test_path))[0]
-    print(f"\n=== Processing files: {test_path} and {source_path} ===")
-    ListOfCodeAndInstructionAndLanguage = [test_path, "file", source_path, "file", "cpp"]
+# ListOfCodeAndInstructionAndLanguage - List of [matchContent, matchType, sourceContent, sourceType, sourceLanguage]
+for TestPath, SourcePath in pairs:
+    base_name = os.path.splitext(os.path.basename(TestPath))[0]
+    print(f"\n=== Processing files: {TestPath} and {SourcePath} ===")
+    ListOfCodeAndInstructionAndLanguage = [TestPath, "file", SourcePath, "file", "cpp"]
     Language = ListOfCodeAndInstructionAndLanguage[4]
 
-    Match = ReceivingMatchOrPatchOrSourceCodeFromList(ListOfCodeAndInstructionAndLanguage, True, MatchLoadFromString)
-    Patch = ReceivingMatchOrPatchOrSourceCodeFromList(ListOfCodeAndInstructionAndLanguage, True, PatchLoadFromString)
-    SourceCode = ReceivingMatchOrPatchOrSourceCodeFromList(ListOfCodeAndInstructionAndLanguage, False)
+    Match = ReceivingMatchOrPatchOrSourceCodeFromListUI(ListOfCodeAndInstructionAndLanguage, True, MatchLoadFromString)
+    Patch = ReceivingMatchOrPatchOrSourceCodeFromListUI(ListOfCodeAndInstructionAndLanguage, True, PatchLoadFromString)
+    SourceCode = ReceivingMatchOrPatchOrSourceCodeFromListUI(ListOfCodeAndInstructionAndLanguage, False)
     Match = CheckAndRunTokenize(Match, Language)
     SourceCode = CheckAndRunTokenize(SourceCode, Language)
     SearchDictionary = SearchInsertIndexInTokenList(Match, SourceCode)
@@ -34,8 +36,9 @@ for test_path, source_path in pairs:
     InsertIndexInSourseCode = SearchInsertIndexInSourseCode(Match, SourceCode)
     NestingMap = MatchNestingLevelInsertALL(Match)
     IsNestingMarkerPairsList = CheckMatchNestingMarkerPairs(Match)
+    Insert(Match, Patch, SourceCode, 'C:/Users/droby/Desktop/Hatch/test/aaa.cpp', True)
 
-    result_tuple = (
+    ResultTuple = (
         Match,
         SourceCode,
         NestingMap,
@@ -45,7 +48,7 @@ for test_path, source_path in pairs:
         InsertIndexInSourseCode,
         base_name
     )
-    results.append(result_tuple)
+    results.append(ResultTuple)
 
 print("=== All Processing Results ===")
 for result in results:
