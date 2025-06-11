@@ -6,7 +6,7 @@ class Calculator {
 double calculate(...)
 ...
 
-if (result > 0.0)
+if (result > 0.0) 
 >>>
 ...
 ```
