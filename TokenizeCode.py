@@ -52,23 +52,6 @@ def CheckAndRunTokenize(CodeString: str,language: str):
         return RemoveInsignificantTokens(TokenizeCode(CodeString, language), language)
     else:
         return RemoveInsignificantTokens(TokenizeWithSpecialOperators(CodeString, language, OperatorIndixesList), language)
-"""
-def GroupTokensMatch(TokenList: list[tuple]):
-    ResultTokenList = []
-    i = 0
-    while i < len(TokenList):
-        if (TokenList[i][1] in ['...', '>>>', '<<<']):
-            Operator = TokenList[i][1]
-            InnerTokens = []
-            i += 1
-            while i < len(TokenList) and not (TokenList[i][1] in ['...', '>>>', '<<<']):
-                InnerTokens.append(TokenList[i])
-                i += 1
-            ResultTokenList.append((Operator, InnerTokens))
-        else:
-            raise ValueError("The match does not start with the operator ...")
-    return ResultTokenList
-"""
 
 def RemoveInsignificantTokens(TokensList: list[tuple], language: str):
     FilteredTokenList = []

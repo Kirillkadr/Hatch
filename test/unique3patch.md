@@ -1,15 +1,3 @@
-### match:
-```
-...
-class Calculator {
-...
-double calculate(...)
-...
-
-if (result > 0.0) 
->>>
-...
-```
 
 ### patch
 ```

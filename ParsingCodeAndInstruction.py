@@ -1,12 +1,31 @@
+import os
 import re
 from typing import Optional
+from typing import Literal
 
-def ReadFile(FileNameMarkdown):
+def ReadFile(FilePath):
     try:
-        with open(FileNameMarkdown, 'r', encoding='utf-8') as file:
+        with open(FilePath, 'r', encoding='utf-8') as file:
             return file.read()
     except FileNotFoundError:
-        return f"Ошибка: файл {FileNameMarkdown} не найден"
+        return f"Ошибка: файл {FilePath} не найден"
+
+
+def ReadLine(FilePath):
+    try:
+        with open(FilePath, 'r', encoding='utf-8') as file:
+            return file.readlines()
+    except FileNotFoundError:
+        return f"Ошибка: файл {FilePath} не найден"
+
+
+def WriteLine(FilePath, ResultLines):
+    try:
+        with open(FilePath, 'w', encoding='utf-8') as file:
+            return file.writelines(ResultLines)
+    except FileNotFoundError:
+        return f"Ошибка: файл {FilePath} не найден"
+
 
 def MatchLoadFromString(StringOfMarkdownContent):
     match = re.search(r'### match:\s*```(.*?)```', StringOfMarkdownContent, re.DOTALL)
@@ -21,11 +40,11 @@ def DetectProgrammingLanguage(FileNameSourceCode):
     '.py': 'python', '.java': 'java', '.cpp': 'cpp',
     '.c': 'c', '.cs': 'csharp', '.js': 'javascript',
     '.rb': 'ruby', '.ts': 'typescript', '.go': 'go',
-    '.rs': ' ', }
-    ext = '.' + FileNameSourceCode.split('.')[-1]
+    '.rs': ' ', '.md': 'markdown' }
+    ext = os.path.splitext(FileNameSourceCode)[1].lower()
     return extensions.get(ext, 'Неизвестный язык')
 
-def ReceivingMatchOrPatchOrSourceCodeFromList(ListOfCodeAndInstructionAndLanguage,IsInstruction, functionMatchOrPatch: Optional = None):
+def ReceivingMatchOrPatchOrSourceCodeFromListUI(ListOfCodeAndInstructionAndLanguage,IsInstruction, functionMatchOrPatch: Optional = None):
     if IsInstruction:
         if functionMatchOrPatch is None: raise ValueError("match_or_patch_function must be provided when is_instruction is True")
 
@@ -36,3 +55,12 @@ def ReceivingMatchOrPatchOrSourceCodeFromList(ListOfCodeAndInstructionAndLanguag
         if ListOfCodeAndInstructionAndLanguage[3] != 'text': return ReadFile( ListOfCodeAndInstructionAndLanguage[2] )
 
         else: return ListOfCodeAndInstructionAndLanguage[2]
+
+
+def ReceivingMatchOrPatchOrSourceCodeFromList(FilePath, TypeContent: Literal['Match', 'Patch', 'SourceCode']):
+    if TypeContent == 'Match':
+        return MatchLoadFromString(ReadFile(FilePath))
+    elif TypeContent == 'Patch':
+        return PatchLoadFromString(ReadFile(FilePath))
+    else:
+        return ReadFile(FilePath)

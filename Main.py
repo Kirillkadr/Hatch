@@ -1,15 +1,15 @@
 import webview
-from LoadFromUI import ReceivingMatchOrPatchOrSourceCodeFromList, MatchLoadFromString, PatchLoadFromString,DetectProgrammingLanguage
-from TokenizeCode import TokenizeCode,FindSpecialOperatorIndixes,CheckAndRunTokenize,RemoveInsignificantTokens
+from ParsingCodeAndInstruction import ReceivingMatchOrPatchOrSourceCodeFromListUI, MatchLoadFromString, PatchLoadFromString
+from TokenizeCode import CheckAndRunTokenize
 from SearchCode import SearchInsertIndexInTokenList, InsertNestingLevel, SearchInsertIndexInSourseCode, CheckMatchNestingMarkerPairs
-
+from Insert import Insert
 class DataProcessor:
         def ProcessInputData(self, ListOfCodeAndInstructionAndLanguage):
             #ListOfCodeAndInstructionAndLanguage - List of [matchContent, matchType, sourceContent, sourceType, sourceLanguage]
             Language = ListOfCodeAndInstructionAndLanguage[4]
-            Match = ReceivingMatchOrPatchOrSourceCodeFromList(ListOfCodeAndInstructionAndLanguage, True, MatchLoadFromString)
-            Patch = ReceivingMatchOrPatchOrSourceCodeFromList(ListOfCodeAndInstructionAndLanguage, True, PatchLoadFromString)
-            SourceCode = ReceivingMatchOrPatchOrSourceCodeFromList(ListOfCodeAndInstructionAndLanguage, False)
+            Match = ReceivingMatchOrPatchOrSourceCodeFromListUI(ListOfCodeAndInstructionAndLanguage, True, MatchLoadFromString)
+            Patch = ReceivingMatchOrPatchOrSourceCodeFromListUI(ListOfCodeAndInstructionAndLanguage, True, PatchLoadFromString)
+            SourceCode = ReceivingMatchOrPatchOrSourceCodeFromListUI(ListOfCodeAndInstructionAndLanguage, False)
             Match = CheckAndRunTokenize(Match, Language)
             SourceCode = CheckAndRunTokenize(SourceCode, Language)
             SearchDictionary = SearchInsertIndexInTokenList(Match,SourceCode)
@@ -23,6 +23,8 @@ class DataProcessor:
             print(f"Insert index in sourcecode TokenList: {SearchDictionary}")
             print(f"Source code TokenList len: {len(SourceCode) - 1}")
             print(f"Insert index in source code: {InsertIndexInSourseCode}")
+
+            Insert(Match, Patch, SourceCode,  'C:/Users/droby/Desktop/Hatch/test/aaa.cpp', True)
             return process_data(ListOfCodeAndInstructionAndLanguage)
 
 def process_data(ListOfCodeAndInstruction):
