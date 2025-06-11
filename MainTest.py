@@ -17,9 +17,10 @@ for TestFile in TestFiles:
     SourceFile = f"{BaseName}.cpp"
     if SourceFile in SourceFiles:
         pairs.append((os.path.join(TestFolder, TestFile), os.path.join(SourceFolder, SourceFile)))
-
+i = 0
 # ListOfCodeAndInstructionAndLanguage - List of [matchContent, matchType, sourceContent, sourceType, sourceLanguage]
 for TestPath, SourcePath in pairs:
+    i += 1
     base_name = os.path.splitext(os.path.basename(TestPath))[0]
     print(f"\n=== Processing files: {TestPath} and {SourcePath} ===")
     ListOfCodeAndInstructionAndLanguage = [TestPath, "file", SourcePath, "file", "cpp"]
@@ -36,7 +37,7 @@ for TestPath, SourcePath in pairs:
     InsertIndexInSourseCode = SearchInsertIndexInSourseCode(Match, SourceCode)
     NestingMap = MatchNestingLevelInsertALL(Match)
     IsNestingMarkerPairsList = CheckMatchNestingMarkerPairs(Match)
-    Insert(Match, Patch, SourceCode, 'C:/Users/droby/Desktop/Hatch/test/aaa.cpp', True)
+    Insert(Match, Patch, SourceCode, SourcePath, F'C:/Users/droby/Desktop/Hatch/source/result{i}.cpp')
 
     ResultTuple = (
         Match,
